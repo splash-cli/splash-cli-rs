@@ -10,8 +10,8 @@ The main goal is to replicate the functionality of [splash-cli][splash-cli]
 - [ ] Centralize (as possible) error handling ([`quick_error`][quick-error]?)
 
 ### Features
-- [ ] Download random photos
-- [ ] Downlaod photo of the day
+- [x] Download random photos
+- [x] Download photo of the day
 - [ ] Manage preferences
 - [ ] Image manipulation
 
