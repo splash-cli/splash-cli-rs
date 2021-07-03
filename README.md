@@ -28,5 +28,10 @@ To avoid spaghetti code and duplication create a set functions under `lib::utils
 Any improvement or suggestion is welcome.
 
 
+## Related
+- [splash-cli][splash-cli]
+- [Unsplash API](https://unsplash.com/developers) - Here you can read docs and register a test apikey for development.
+
+
 [splash-cli]: https://github.com/splash-cli/splash-cli
 [quick-error]: https://github.com/tailhook/quick-error
