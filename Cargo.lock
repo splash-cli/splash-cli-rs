@@ -1799,6 +1799,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "simple-storage"
+version = "0.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ec5bbf106691b95f1de63180211e59454d4f70fcd5e902e39add02362ee1fb6b"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "slab"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1873,6 +1883,7 @@ dependencies = [
  "quick-error",
  "serde",
  "serde_json",
+ "simple-storage",
  "spinners",
  "ureq",
  "url 2.2.2",

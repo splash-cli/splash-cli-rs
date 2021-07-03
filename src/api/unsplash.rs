@@ -1,14 +1,11 @@
 use isahc::prelude::*;
-use serde::Deserialize;
 use serde_json::from_str;
 use std::collections::HashMap;
 use url::Url;
 
-pub enum Orientation {
-    LANDSCAPE,
-    PORTRAIT,
-    SQUARISH,
-}
+use crate::api::models::*;
+
+pub type Params = HashMap<&'static str, &'static str>;
 
 pub struct Unsplash {
     api_key: String,
@@ -19,42 +16,37 @@ impl Unsplash {
     pub fn new(api_key: &str) -> Unsplash {
         Unsplash {
             api_key: String::from(api_key),
-            url: Url::parse("https://api.unsplash.com").unwrap(),
+            url: Url::parse("https://api.unsplash.com").unwrap()
         }
     }
 
-    pub fn get_photo(&mut self, photo_id: &str) -> Result<Photo, isahc::Error> {
-        self.url.set_path(&format!("/photos/{}", photo_id));
+    pub fn get_photo(&self, photo_id: &str) -> Result<Photo, isahc::Error> {
+        let response_text = self.get(&format!("/photos/{}", photo_id), HashMap::new())?;
 
-        let mut response = isahc::get(self.url.as_str())?;
-
-        let photo: Photo = from_str(&response.text()?).expect("Error while decoding JSON");
+        let photo: Photo = from_str(&response_text)
+            .expect("Error while decoding JSON");
 
         return Ok(photo);
     }
 
-    pub fn get_random_photo(
-        &mut self,
-        options: HashMap<&str, &str>,
-    ) -> Result<Photo, isahc::Error> {
-        for key in options.keys() {
-            self.url.query_pairs_mut().append_pair(key, key);
-        }
+    pub fn get_random_photo(&self, params: RandomPhotoParams) -> Result<Photo, isahc::Error> {
+        let response_text = self.get("/photos/random", params.into_hash_map())?;
 
-        let response_text = self.get("/photos/random")?;
-        let photo: Photo = from_str(&response_text).expect("Error while decoding json");
+        let photo: Photo = from_str(&response_text)
+            .expect("Error while decoding json");
 
         return Ok(photo);
     }
 
-    pub fn get_phot_of_the_day(&mut self) -> Result<Photo, isahc::Error> {
-        let url = Url::parse("https://lambda.splash-cli.app").unwrap();
+    pub fn get_photo_of_the_day(&self) -> Result<Photo, isahc::Error> {
+        let url = Url::parse("https://lambda.splash-cli.app/api").unwrap();
 
         let mut response = isahc::get(url.as_str())?;
         let text = response.text()?;
 
         // Parse JSON
-        let data: PhotoOfTheDay = from_str(&text).expect("Error while parsing JSON");
+        let data: PhotoOfTheDay = from_str(&text)
+            .expect("Error while parsing JSON");
 
         let photo = self.get_photo(&data.id)?;
 
@@ -62,55 +54,74 @@ impl Unsplash {
     }
 
     // Private API
-    fn get(&mut self, path: &str) -> Result<String, isahc::Error> {
-        self.url.set_path(path);
+    fn get(&self, path: &str, query_params: HashMap<&str, String>) -> Result<String, isahc::Error> {
+        let mut url = self.url.clone();
+        url.set_path(path);
+
+        for key in query_params.keys() {
+            if let Some(value) = query_params.get(key) {
+                url.query_pairs_mut().append_pair(key, value.as_str());
+            }
+        }
 
         let req = isahc::Request::builder()
             .method("GET")
             .header("Authorization", &format!("Client-ID {}", self.api_key))
-            .uri(self.url.as_str())
+            .uri(url.as_str())
             .body(())?;
 
         let mut response = isahc::send(req)?;
         let text = response.text()?;
 
-        self.reset_query();
-
         return Ok(text);
     }
-
-    fn reset_query(&mut self) {
-        self.url.set_query(Option::from(""));
-    }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Photo {
-    pub id: String,
-    pub color: String,
-    pub width: i32,
-    pub height: i32,
-    pub user: User,
-    pub urls: PhotoURLS,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct User {
-    pub id: String,
+pub struct RandomPhotoParams {
+    pub orientation: Orientation,
     pub username: String,
+    pub featured: bool,
+    pub collections: Vec<String>,
+    pub query: String,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct PhotoURLS {
-    pub raw: String,
-    pub full: String,
-    pub regular: String,
-    pub thumb: String,
-    pub download_location: String,
-    pub download: String,
-}
+impl RandomPhotoParams {
+    pub fn from(hash_map: HashMap<&'static str, &'static str>) -> RandomPhotoParams {
+        RandomPhotoParams {
+            orientation: Orientation::from_str(hash_map["orientation"]),
+            username: hash_map["username"].into(),
+            query: hash_map["query"].into(),
+            featured: hash_map["featured"] == "true",
+            collections: hash_map["collections"]
+                .split(",")
+                .map(String::from)
+                .collect::<Vec<String>>()
+        }
+    }
 
-#[derive(Deserialize, Debug)]
-pub struct PhotoOfTheDay {
-    pub id: String,
+    pub fn into_hash_map(self) -> HashMap<&'static str, String> {
+        let mut hash_map = HashMap::<&'static str, String>::new();
+
+        let mut collections: String = String::new();
+
+        for collection in self.collections {
+            collections.push_str(&format!("{},", collection));
+        }
+
+        hash_map
+                .insert("collections", collections);
+        hash_map
+            .insert("featured", String::from(match self.featured { true => "true", false => "false" }));
+
+        hash_map
+            .insert("query", self.query);
+
+        hash_map
+            .insert("orientation", self.orientation.to_string());
+
+        hash_map
+            .insert("username", self.username);
+
+        return hash_map;
+    }
 }
