@@ -1,21 +1,20 @@
-use wallpaper;
-use ureq;
 use clap::{App, Arg};
-use std::{io, collections::{HashMap}};
-use serde::{Deserialize};
+use serde::Deserialize;
 use spinners::{Spinner, Spinners};
+use std::{collections::HashMap, io};
+use ureq;
+use wallpaper;
 
 pub mod api;
-use api::unsplash::{Unsplash, Photo};
+use api::unsplash::{Photo, Unsplash};
 
 #[derive(Deserialize)]
 struct PhotoOfTheDay {
-    id: String
+    id: String,
 }
 
-
 fn main() -> io::Result<()> {
-    let mut api = Unsplash::new("");
+    let mut api = Unsplash::new(&env!("UNSPLASH_CLIENT_ID"));
 
     let matches = App::new("splash")
         .about("Unsplash Photos")
@@ -23,32 +22,29 @@ fn main() -> io::Result<()> {
             Arg::with_name("featured")
                 .short("f")
                 .long("featured")
-                .takes_value(false)
+                .takes_value(false),
         )
         .arg(
             Arg::with_name("query")
                 .short("q")
                 .long("query")
-                .takes_value(true)
+                .takes_value(true),
         )
         .arg(
             Arg::with_name("user")
                 .short("u")
                 .long("user")
                 .takes_value(true)
-                .conflicts_with("featured")
+                .conflicts_with("featured"),
         )
         .arg(
             Arg::with_name("orientation")
                 .short("o")
                 .long("orientation")
                 .takes_value(true)
-                .value_name("landscape|portrait|squarish")
+                .value_name("landscape|portrait|squarish"),
         )
-        .subcommand(
-            App::new("day")
-                .alias("d")
-        )
+        .subcommand(App::new("day").alias("d"))
         .setting(clap::AppSettings::ArgRequiredElseHelp)
         .get_matches();
 
@@ -62,18 +58,16 @@ fn main() -> io::Result<()> {
 
         let photo: Photo = api.get_photo(&response.id)?;
 
-        wallpaper::set_from_url(&photo.urls.raw)
-            .expect("Wallpaper Error");
+        wallpaper::set_from_url(&photo.urls.raw).expect("Wallpaper Error");
 
         spinner.stop();
 
         return Ok(());
     }
 
-
     // RRANDOM
     let spinner = Spinner::new(Spinners::Arc, "Loading...".into());
-    let mut options : HashMap<&str, &str> = HashMap::new();
+    let mut options: HashMap<&str, &str> = HashMap::new();
 
     if let Some(orientation) = matches.value_of("orientation") {
         options.insert("orientation", orientation);
@@ -91,14 +85,12 @@ fn main() -> io::Result<()> {
 
     let photo: Photo = api.get_random_photo(options)?;
 
-    wallpaper::set_from_url(&photo.urls.raw)
-        .expect("Wallpaper Error");
+    wallpaper::set_from_url(&photo.urls.raw).expect("Wallpaper Error");
 
     spinner.stop();
 
     return Ok(());
 }
-
 
 // fn download_image(url: &Url) -> Result<String> {
 //     let cache_dir = dirs::cache_dir().ok_or("no cache dir")?;
