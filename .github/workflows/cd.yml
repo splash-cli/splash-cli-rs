@@ -28,9 +28,9 @@ jobs:
       - name: Build Release macOS
         if: matrix.os == 'macos-latest'
         run: |
-          strip target/release/aow
+          strip target/release/splash
           mkdir -p release
-          tar -C ./target/release/ -czvf ./release/aow-mac.tar.gz ./aow
+          tar -C ./target/release/ -czvf ./release/splash-mac.tar.gz ./splash
 
       # Condition to only run this whenever the runner os is Ubuntu
       - name: Build Release Linux
@@ -38,17 +38,17 @@ jobs:
         run: |
           cargo install cargo-deb
           cargo deb
-          strip target/release/aow
+          strip target/release/splash
           mkdir -p release
-          mv target/debian/*.deb ./release/aow-linux.deb
-          tar -C ./target/release/ -czvf ./release/aow-linux.tar.gz ./aow
+          mv target/debian/*.deb ./release/splash-linux.deb
+          tar -C ./target/release/ -czvf ./release/splash-linux.tar.gz ./splash
 
       # Condition to only run this whenever the runner os is Windows
       - name: Build Release Win
         if: matrix.os == 'windows-latest'
         run: |
           mkdir -p release
-          tar -C ./target/release/ -czvf ./release/aow-win.tar.gz ./aow.exe
+          tar -C ./target/release/ -czvf ./release/splash-win.tar.gz ./splash.exe
 
       # This will draft a new release & will attach the binaries produced by the above outputs.
       # You still need to publish this release though after job ends.
