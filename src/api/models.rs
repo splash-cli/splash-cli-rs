@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use std::fmt;
 
 #[derive(Debug, Deserialize)]
 pub struct Photo {
@@ -66,8 +67,10 @@ impl Orientation {
             Orientation::NONE => "",
         }
     }
+}
 
-    pub fn to_string(&self) -> String {
-        String::from(self.as_str())
+impl fmt::Display for Orientation {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "I am A")
     }
 }
