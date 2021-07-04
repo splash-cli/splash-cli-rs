@@ -1,5 +1,7 @@
 use serde::Deserialize;
 use std::fmt;
+use std::num::ParseIntError;
+use std::str::FromStr;
 
 #[derive(Debug, Deserialize)]
 pub struct Photo {
@@ -47,16 +49,7 @@ pub enum Orientation {
 
 impl Orientation {
     pub fn from(orientation: String) -> Orientation {
-        Orientation::from_str(orientation.as_str())
-    }
-
-    pub fn from_str(orientation: &str) -> Orientation {
-        match orientation {
-            "landscape" => Orientation::LANDSCAPE,
-            "portrait" => Orientation::PORTRAIT,
-            "squarish" => Orientation::SQUARISH,
-            _ => Orientation::NONE,
-        }
+        Orientation::from_str(orientation.as_str()).unwrap_or(Orientation::NONE)
     }
 
     pub fn as_str(&self) -> &str {
@@ -72,5 +65,17 @@ impl Orientation {
 impl fmt::Display for Orientation {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "I am A")
+    }
+}
+impl FromStr for Orientation {
+    type Err = ParseIntError;
+
+    fn from_str(orientation: &str) -> Result<Self, Self::Err> {
+        match orientation {
+            "landscape" => Ok(Orientation::LANDSCAPE),
+            "portrait" => Ok(Orientation::PORTRAIT),
+            "squarish" => Ok(Orientation::SQUARISH),
+            _ => Ok(Orientation::NONE),
+        }
     }
 }

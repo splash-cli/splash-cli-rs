@@ -1,6 +1,6 @@
 use isahc::prelude::*;
 use serde_json::from_str;
-use std::collections::HashMap;
+use std::{collections::HashMap, str::FromStr};
 use url::Url;
 
 use crate::api::models::*;
@@ -25,15 +25,14 @@ impl Unsplash {
 
         let photo: Photo = from_str(&response_text).expect("Error while decoding JSON");
 
-        return Ok(photo);
+        Ok(photo)
     }
 
     pub fn get_random_photo(&self, params: RandomPhotoParams) -> Result<Photo, isahc::Error> {
         let response_text = self.get("/photos/random", params.into_hash_map())?;
-
         let photo: Photo = from_str(&response_text).expect("Error while decoding json");
 
-        return Ok(photo);
+        Ok(photo)
     }
 
     pub fn get_photo_of_the_day(&self) -> Result<Photo, isahc::Error> {
@@ -47,7 +46,7 @@ impl Unsplash {
 
         let photo = self.get_photo(&data.id)?;
 
-        return Ok(photo);
+        Ok(photo)
     }
 
     // Private API
@@ -70,10 +69,9 @@ impl Unsplash {
         let mut response = isahc::send(req)?;
         let text = response.text()?;
 
-        return Ok(text);
+        Ok(text)
     }
 }
-
 pub struct RandomPhotoParams {
     pub orientation: Orientation,
     pub username: String,
@@ -85,12 +83,12 @@ pub struct RandomPhotoParams {
 impl RandomPhotoParams {
     pub fn from(hash_map: HashMap<&'static str, &'static str>) -> RandomPhotoParams {
         RandomPhotoParams {
-            orientation: Orientation::from_str(hash_map["orientation"]),
+            orientation: Orientation::from_str(hash_map["orientation"]).unwrap(),
             username: hash_map["username"].into(),
             query: hash_map["query"].into(),
             featured: hash_map["featured"] == "true",
             collections: hash_map["collections"]
-                .split(",")
+                .split(',')
                 .map(String::from)
                 .collect::<Vec<String>>(),
         }
@@ -116,10 +114,10 @@ impl RandomPhotoParams {
 
         hash_map.insert("query", self.query);
 
-        hash_map.insert("orientation", self.orientation.to_string());
+        hash_map.insert("orientation", self.orientation.as_str().to_string());
 
         hash_map.insert("username", self.username);
 
-        return hash_map;
+        hash_map
     }
 }
