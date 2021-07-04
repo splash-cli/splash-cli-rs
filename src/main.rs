@@ -58,7 +58,7 @@ fn main() -> io::Result<()> {
         .get_matches();
 
     // Photo of the day
-    if let Some(_) = matches.subcommand_matches("day") {
+    if matches.subcommand_matches("day").is_some() {
         return photos::photo_of_the_day(&api);
     }
 
@@ -75,7 +75,7 @@ fn main() -> io::Result<()> {
         random_photo_params.orientation = Orientation::from(orientation.into());
     }
 
-    if let Some(_) = matches.value_of("featured") {
+    if matches.value_of("featured").is_some() {
         random_photo_params.featured = true;
     }
 
@@ -83,5 +83,5 @@ fn main() -> io::Result<()> {
         random_photo_params.username = user.into();
     }
 
-    return photos::random_photo(&api, random_photo_params);
+    photos::random_photo(&api, random_photo_params)
 }

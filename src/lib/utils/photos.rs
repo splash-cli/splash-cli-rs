@@ -7,12 +7,11 @@ use crate::api::unsplash::{RandomPhotoParams, Unsplash};
 pub fn random_photo(api: &Unsplash, params: RandomPhotoParams) -> Result<()> {
     let spinner = Spinner::new(Spinners::Arc, "Loading...".into());
     let photo = api.get_random_photo(params)?;
-
     wallpaper::set_from_url(&photo.urls.raw).expect("Wallpaper Error");
 
     spinner.stop();
 
-    return Ok(());
+    Ok(())
 }
 
 pub fn photo_of_the_day(api: &Unsplash) -> Result<()> {
@@ -23,5 +22,5 @@ pub fn photo_of_the_day(api: &Unsplash) -> Result<()> {
 
     spinner.stop();
 
-    return Ok(());
+    Ok(())
 }
