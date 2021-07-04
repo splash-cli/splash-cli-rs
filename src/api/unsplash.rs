@@ -16,15 +16,14 @@ impl Unsplash {
     pub fn new(api_key: &str) -> Unsplash {
         Unsplash {
             api_key: String::from(api_key),
-            url: Url::parse("https://api.unsplash.com").unwrap()
+            url: Url::parse("https://api.unsplash.com").unwrap(),
         }
     }
 
     pub fn get_photo(&self, photo_id: &str) -> Result<Photo, isahc::Error> {
         let response_text = self.get(&format!("/photos/{}", photo_id), HashMap::new())?;
 
-        let photo: Photo = from_str(&response_text)
-            .expect("Error while decoding JSON");
+        let photo: Photo = from_str(&response_text).expect("Error while decoding JSON");
 
         return Ok(photo);
     }
@@ -32,8 +31,7 @@ impl Unsplash {
     pub fn get_random_photo(&self, params: RandomPhotoParams) -> Result<Photo, isahc::Error> {
         let response_text = self.get("/photos/random", params.into_hash_map())?;
 
-        let photo: Photo = from_str(&response_text)
-            .expect("Error while decoding json");
+        let photo: Photo = from_str(&response_text).expect("Error while decoding json");
 
         return Ok(photo);
     }
@@ -45,8 +43,7 @@ impl Unsplash {
         let text = response.text()?;
 
         // Parse JSON
-        let data: PhotoOfTheDay = from_str(&text)
-            .expect("Error while parsing JSON");
+        let data: PhotoOfTheDay = from_str(&text).expect("Error while parsing JSON");
 
         let photo = self.get_photo(&data.id)?;
 
@@ -95,7 +92,7 @@ impl RandomPhotoParams {
             collections: hash_map["collections"]
                 .split(",")
                 .map(String::from)
-                .collect::<Vec<String>>()
+                .collect::<Vec<String>>(),
         }
     }
 
@@ -108,19 +105,20 @@ impl RandomPhotoParams {
             collections.push_str(&format!("{},", collection));
         }
 
-        hash_map
-                .insert("collections", collections);
-        hash_map
-            .insert("featured", String::from(match self.featured { true => "true", false => "false" }));
+        hash_map.insert("collections", collections);
+        hash_map.insert(
+            "featured",
+            String::from(match self.featured {
+                true => "true",
+                false => "false",
+            }),
+        );
 
-        hash_map
-            .insert("query", self.query);
+        hash_map.insert("query", self.query);
 
-        hash_map
-            .insert("orientation", self.orientation.to_string());
+        hash_map.insert("orientation", self.orientation.to_string());
 
-        hash_map
-            .insert("username", self.username);
+        hash_map.insert("username", self.username);
 
         return hash_map;
     }
