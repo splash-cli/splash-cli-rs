@@ -8,7 +8,7 @@ pub struct Photo {
     pub height: i32,
     pub user: User,
     pub urls: PhotoURLS,
-    pub links: PhotoLinks
+    pub links: PhotoLinks,
 }
 
 #[derive(Debug, Deserialize)]
