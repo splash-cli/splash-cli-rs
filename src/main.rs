@@ -1,3 +1,4 @@
+use std::env;
 use std::io;
 
 use clap::{App, Arg};
@@ -12,7 +13,11 @@ pub mod lib;
 use crate::lib::utils::photos;
 
 fn main() -> io::Result<()> {
-    let api = Unsplash::new(&env!("UNSPLASH_CLIENT_ID"));
+    let unsplah_client_id = match env::var("UNSPLASH_CLIENT_ID") {
+        Ok(val) => val,
+        Err(_) => panic!("Unsplash Client ID not defined."),
+    };
+    let api = Unsplash::new(unsplah_client_id.as_str());
 
     let matches = App::new("splash")
         .about("Unsplash Photos")
