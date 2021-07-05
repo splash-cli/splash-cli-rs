@@ -22,7 +22,6 @@ impl Unsplash {
 
     pub fn get_photo(&self, photo_id: &str) -> Result<Photo, isahc::Error> {
         let response_text = self.get(&format!("/photos/{}", photo_id), HashMap::new())?;
-
         let photo: Photo = from_str(&response_text).expect("Error while decoding JSON");
 
         Ok(photo)
@@ -30,7 +29,7 @@ impl Unsplash {
 
     pub fn get_random_photo(&self, params: RandomPhotoParams) -> Result<Photo, isahc::Error> {
         let response_text = self.get("/photos/random", params.into_hash_map())?;
-        let photo: Photo = from_str(&response_text).expect("Error while decoding json");
+        let photo: Photo = from_str(&response_text).expect("Error while decoding JSON");
 
         Ok(photo)
     }
@@ -111,11 +110,8 @@ impl RandomPhotoParams {
                 false => "false",
             }),
         );
-
         hash_map.insert("query", self.query);
-
-        hash_map.insert("orientation", self.orientation.as_str().to_string());
-
+        hash_map.insert("orientation", self.orientation.to_string());
         hash_map.insert("username", self.username);
 
         hash_map

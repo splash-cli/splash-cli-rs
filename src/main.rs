@@ -1,5 +1,6 @@
 use std::env;
 use std::io;
+use std::str::FromStr;
 
 use clap::{App, Arg};
 
@@ -44,6 +45,7 @@ fn main() -> io::Result<()> {
             Arg::with_name("orientation")
                 .short("o")
                 .long("orientation")
+                .default_value("landscape")
                 .takes_value(true)
                 .value_name("landscape|portrait|squarish"),
         )
@@ -72,7 +74,13 @@ fn main() -> io::Result<()> {
     };
 
     if let Some(orientation) = matches.value_of("orientation") {
-        random_photo_params.orientation = Orientation::from(orientation.into());
+        match Orientation::from_str(orientation) {
+            Ok(orientation) => random_photo_params.orientation = orientation,
+            Err(e) => {
+                eprintln!("{}", e.to_string());
+                random_photo_params.orientation = Orientation::LANDSCAPE
+            }
+        }
     }
 
     if matches.value_of("featured").is_some() {
