@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use std::fmt;
 use std::str::FromStr;
 
 #[derive(Debug, Deserialize)]
@@ -58,29 +57,14 @@ pub enum Orientation {
     NONE,
 }
 
-impl Orientation {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Orientation::LANDSCAPE => "landscape",
-            Orientation::PORTRAIT => "portrait",
-            Orientation::SQUARISH => "squarish",
-            Orientation::NONE => "landscape",
-        }
-    }
-
-    pub fn as_string(&self) -> String {
+impl std::string::ToString for Orientation {
+    fn to_string(&self) -> String {
         match self {
             Orientation::LANDSCAPE => String::from("landscape"),
             Orientation::PORTRAIT => String::from("portrait"),
             Orientation::SQUARISH => String::from("squarish"),
             Orientation::NONE => String::from("landscape"),
         }
-    }
-}
-
-impl fmt::Display for Orientation {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.as_str())
     }
 }
 
