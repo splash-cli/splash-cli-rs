@@ -5,7 +5,9 @@
 The main goal is to replicate the functionality of [splash-cli][splash-cli]
 
 ### Project
-- [ ] Setup CI
+- [-] Setup CI / CD 
+  - [ ] Auto release (CD)
+  - [x] Run tests and fmt 
 - [ ] Add tests
 - [ ] Centralize (as possible) error handling ([`quick_error`][quick-error]?)
 
