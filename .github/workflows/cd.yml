@@ -1,4 +1,12 @@
-on: [push]
+on:
+  push:
+    braches:
+      - master
+      - develop
+    paths-ignore:
+      - '**.md'
+      - '.idea/**/*'
+      - 'Makefile'
 
 name: Continuous Deployment
 
@@ -31,6 +39,7 @@ jobs:
           strip target/release/splash
           mkdir -p release
           tar -C ./target/release/ -czvf ./release/splash-mac.tar.gz ./splash
+
 
       # Condition to only run this whenever the runner os is Ubuntu
       - name: Build Release Linux

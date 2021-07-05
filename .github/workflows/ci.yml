@@ -1,4 +1,15 @@
-on: [push, pull_request]
+on: 
+  push:
+    paths-ignore:
+      - '**.md'
+      - 'Makefile'
+      - '.idea/**/*'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'Makefile'
+      - '.idea/**/*'
+  workflow_dispatch:
 
 name: Continuous integration
 
