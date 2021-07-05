@@ -94,7 +94,8 @@ impl FromStr for Orientation {
             "squarish" => Ok(Orientation::SQUARISH),
             "" => Ok(Orientation::LANDSCAPE),
             _ => {
-                let details = "Choose between 'landscape', 'portrait' or 'squarish'. Default is 'landscape'";
+                let details =
+                    "Choose between 'landscape', 'portrait' or 'squarish'. Default is 'landscape'";
                 Err(OrientationError::InvalidArgs {
                     details: details.to_string(),
                 })
