@@ -1,6 +1,5 @@
 use serde::Deserialize;
 use std::fmt;
-use std::num::ParseIntError;
 use std::str::FromStr;
 
 #[derive(Debug, Deserialize)]
@@ -38,6 +37,18 @@ pub struct PhotoLinks {
 pub struct PhotoOfTheDay {
     pub id: String,
 }
+#[derive(Debug)]
+pub enum OrientationError {
+    InvalidArgs { details: String },
+}
+
+impl std::string::ToString for OrientationError {
+    fn to_string(&self) -> String {
+        match self {
+            OrientationError::InvalidArgs { details } => details.to_string(),
+        }
+    }
+}
 
 #[derive(Debug)]
 pub enum Orientation {
@@ -48,34 +59,46 @@ pub enum Orientation {
 }
 
 impl Orientation {
-    pub fn from(orientation: String) -> Orientation {
-        Orientation::from_str(orientation.as_str()).unwrap_or(Orientation::NONE)
-    }
-
     pub fn as_str(&self) -> &str {
         match self {
             Orientation::LANDSCAPE => "landscape",
             Orientation::PORTRAIT => "portrait",
             Orientation::SQUARISH => "squarish",
-            Orientation::NONE => "",
+            Orientation::NONE => "landscape",
+        }
+    }
+
+    pub fn as_string(&self) -> String {
+        match self {
+            Orientation::LANDSCAPE => String::from("landscape"),
+            Orientation::PORTRAIT => String::from("portrait"),
+            Orientation::SQUARISH => String::from("squarish"),
+            Orientation::NONE => String::from("landscape"),
         }
     }
 }
 
 impl fmt::Display for Orientation {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "I am A")
+        write!(f, "{}", self.as_str())
     }
 }
+
 impl FromStr for Orientation {
-    type Err = ParseIntError;
+    type Err = OrientationError;
 
     fn from_str(orientation: &str) -> Result<Self, Self::Err> {
         match orientation {
             "landscape" => Ok(Orientation::LANDSCAPE),
             "portrait" => Ok(Orientation::PORTRAIT),
             "squarish" => Ok(Orientation::SQUARISH),
-            _ => Ok(Orientation::NONE),
+            "" => Ok(Orientation::LANDSCAPE),
+            _ => {
+                let details = "Choose between 'landscape', 'portrait' or 'squarish'. Default is 'landscape'";
+                Err(OrientationError::InvalidArgs {
+                    details: details.to_string(),
+                })
+            }
         }
     }
 }

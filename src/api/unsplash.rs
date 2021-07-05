@@ -113,8 +113,7 @@ impl RandomPhotoParams {
         );
 
         hash_map.insert("query", self.query);
-
-        hash_map.insert("orientation", self.orientation.as_str().to_string());
+        hash_map.insert("orientation", self.orientation.as_string());
 
         hash_map.insert("username", self.username);
 
