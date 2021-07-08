@@ -46,7 +46,7 @@ pub fn photo_of_the_day(api: &Unsplash) -> Result<()> {
 }
 
 
-fn download_and_set(photo: models::Photo) -> std::result::Result<(), Box<::std::error::Error>> {
+fn download_and_set(photo: models::Photo) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let filepath = match download_file(&photo.urls.raw, &format!("{}.jpg", photo.id)) {
         Ok(path) => path,
         Err(e) => {
