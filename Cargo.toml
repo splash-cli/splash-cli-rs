@@ -12,10 +12,12 @@ dirs = "3.0.2"
 image = "0.23.14"
 isahc = "1.4.0"
 quick-error = "2.0.1"
+reqwest = { version = "0.11.4", features = [ "blocking", "json" ] }
+self_update = "0.27.0"
 serde = "1.0.126"
 serde_json = "1.0.64"
 simple-storage = "0.0.2"
 spinners = "1.2.0"
 ureq = { version = "2.1.1", features = ["json"] }
 url = "2.2.2"
-wallpaper = "2.0.1"
+wallpaper = "3.1.1"

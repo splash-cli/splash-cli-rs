@@ -6,6 +6,9 @@ use clap::{App, Arg};
 
 // API
 pub mod api;
+
+// pub mod wallpaper;
+
 use crate::api::models::*;
 use crate::api::unsplash::{RandomPhotoParams, Unsplash};
 
