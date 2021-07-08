@@ -58,6 +58,11 @@ fn main() -> io::Result<()> {
                 .long("day")
                 .takes_value(false),
         )
+        .subcommand(
+            App::new("update")
+                .alias("upgrade")
+                .about("update the cli to the latest version")
+        )
         .subcommand(App::new("day").alias("d"))
         .setting(clap::AppSettings::ArgRequiredElseHelp)
         .get_matches();
