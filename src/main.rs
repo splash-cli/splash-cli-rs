@@ -1,8 +1,7 @@
-use std::env;
-use std::io;
-use std::str::FromStr;
-
+use anyhow::Result;
 use clap::{App, Arg};
+use std::env;
+use std::str::FromStr;
 
 // API
 pub mod api;
@@ -16,7 +15,7 @@ use crate::api::unsplash::{RandomPhotoParams, Unsplash};
 pub mod lib;
 use crate::lib::utils::photos;
 
-fn main() -> io::Result<()> {
+fn main() -> Result<()> {
     let unsplah_client_id = match env::var("UNSPLASH_CLIENT_ID") {
         Ok(val) => val,
         Err(_) => panic!("Unsplash Client ID not defined."),
@@ -61,7 +60,7 @@ fn main() -> io::Result<()> {
         .subcommand(
             App::new("update")
                 .alias("upgrade")
-                .about("update the cli to the latest version")
+                .about("update the cli to the latest version"),
         )
         .subcommand(App::new("day").alias("d"))
         .setting(clap::AppSettings::ArgRequiredElseHelp)
