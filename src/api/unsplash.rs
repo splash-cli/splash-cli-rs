@@ -1,6 +1,6 @@
 use crate::api::models::*;
-use serde_json::from_str;
 use reqwest;
+use serde_json::from_str;
 use std::{collections::HashMap, str::FromStr};
 use url::Url;
 
