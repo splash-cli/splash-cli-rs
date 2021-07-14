@@ -1,4 +1,4 @@
-prog :=aalias
+prog :=splash
 debug ?=
 
 ifdef debug
@@ -16,7 +16,6 @@ install:
 	mv ./target/$(target)/$(prog) /usr/local/bin/$(prog)
 
 tar:
-	cargo build --release;
 	tar -czf $(prog).tar.gz --directory=./target/$(target) $(prog)
 	shasum -a 256 $(prog).tar.gz
 
