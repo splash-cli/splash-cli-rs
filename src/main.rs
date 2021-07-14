@@ -15,7 +15,7 @@ use crate::api::unsplash::{RandomPhotoParams, Unsplash};
 pub mod lib;
 use crate::lib::utils::{ photos, update };
 
-fn main() -> io::Result<()> {
+fn main() -> Result<()> {
     let unsplah_client_id = env!("UNSPLASH_CLIENT_ID");
     let api = Unsplash::new(unsplah_client_id);
 

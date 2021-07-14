@@ -45,17 +45,3 @@ fn download_check(photo: Photo, spinner: Spinner) -> Result<()> {
 
     Ok(())
 }
-
-
-fn download_and_set(photo: models::Photo) -> std::result::Result<(), Box<dyn std::error::Error>> {
-    let filepath = match download_file(&photo.urls.raw, &format!("{}.jpg", photo.id)) {
-        Ok(path) => path,
-        Err(e) => {
-            eprintln!("An error is occurred: {}", e);
-            String::new()
-        }
-    };
-
-
-    wallpaper::set_from_path(&filepath)
-}

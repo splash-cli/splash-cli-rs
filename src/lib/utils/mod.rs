@@ -39,7 +39,7 @@ pub fn download_file(url: &str, filename: &str) -> Result<String, reqwest::Error
 }
 
 #[allow(dead_code)]
-fn update() -> Result<(), Box<dyn std::error::Error>> {
+pub fn update() -> Result<(), Box<dyn std::error::Error>> {
     let status = self_update::backends::github::Update::configure()
         .repo_owner("splash-cli")
         .repo_name("splash-cli-rs")
@@ -48,7 +48,7 @@ fn update() -> Result<(), Box<dyn std::error::Error>> {
         .current_version(cargo_crate_version!())
         .build()?
         .update()?;
-        
+
     println!("Update status: `{}`!", status.version());
     Ok(())
 }
