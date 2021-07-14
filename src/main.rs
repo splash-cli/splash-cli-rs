@@ -1,8 +1,7 @@
-use std::env;
-use std::io;
-use std::str::FromStr;
-
+use anyhow::Result;
 use clap::{App, Arg};
+use std::env;
+use std::str::FromStr;
 
 // API
 pub mod api;
@@ -58,7 +57,7 @@ fn main() -> io::Result<()> {
         .subcommand(
             App::new("update")
                 .alias("upgrade")
-                .about("update the cli to the latest version")
+                .about("update the cli to the latest version"),
         )
         .subcommand(App::new("day").alias("d"))
         .setting(clap::AppSettings::ArgRequiredElseHelp)
