@@ -42,15 +42,17 @@ pub fn download_file(url: &str, filename: &str) -> Result<String, reqwest::Error
 }
 
 
-fn update() -> Result<(), Box<dyn std::error::Error>> {
+pub fn update() -> Result<(), Box<dyn std::error::Error>> {
     let status = self_update::backends::github::Update::configure()
-        .repo_owner("jaemk")
-        .repo_name("self_update")
-        .bin_name("github")
+        .repo_owner("splash-cli")
+        .repo_name("splash-cli-rs")
+        .bin_name("splash")
         .show_download_progress(true)
         .current_version(cargo_crate_version!())
         .build()?
         .update()?;
+
     println!("Update status: `{}`!", status.version());
+
     Ok(())
 }
