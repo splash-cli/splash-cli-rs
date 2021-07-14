@@ -14,14 +14,11 @@ use crate::api::unsplash::{RandomPhotoParams, Unsplash};
 
 // Utils
 pub mod lib;
-use crate::lib::utils::photos;
+use crate::lib::utils::{ photos, update };
 
 fn main() -> io::Result<()> {
-    let unsplah_client_id = match env::var("UNSPLASH_CLIENT_ID") {
-        Ok(val) => val,
-        Err(_) => panic!("Unsplash Client ID not defined."),
-    };
-    let api = Unsplash::new(unsplah_client_id.as_str());
+    let unsplah_client_id = env!("UNSPLASH_CLIENT_ID");
+    let api = Unsplash::new(unsplah_client_id);
 
     let matches = App::new("splash")
         .about("Unsplash Photos")
@@ -70,6 +67,15 @@ fn main() -> io::Result<()> {
     // Photo of the day
     if matches.subcommand_matches("day").is_some() {
         return photos::photo_of_the_day(&api);
+    }
+
+    if matches.subcommand_matches("update").is_some() {
+        match update() {
+            Ok(_) => println!("Updated"),
+            Err(e) => println!("Update failed: {}", e),
+        }
+
+        return Ok(());
     }
 
     // Otherwise => Random Photo
